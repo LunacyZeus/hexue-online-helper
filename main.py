@@ -47,7 +47,10 @@ class MainProcess(object):
 
         logger.debug('点击继续学习按钮')
         info_list_button = page(f"x://div[@class='info_list_button']")
+        #print(info_list_button.html)
         tab = info_list_button.click.for_new_tab()
+        time.sleep(1)
+
         self.help_study_detail(tab=tab)
 
         logger.debug(f"学习结束 跳转到课程列表后操作")
@@ -82,7 +85,7 @@ class MainProcess(object):
 
             # 使用 with 语句创建一个进度条
             with alive_bar(force_tty=True) as bar: # 给 alive_bar 传入进度条总数目（这里是 100）
-                for item in range(600):
+                for item in range(500):
                     # 等待 1s
                     time.sleep(0.1)
                     #更新进度条，进度 +1
@@ -103,7 +106,6 @@ class MainProcess(object):
         cours_study_tab = self.page.get_tab(url="/#/cours-study")
         logger.debug(f"刷新并获取学习列表页地址->{cours_study_tab.url}")
         cours_study_tab.refresh()
-        self.help_study(cours_study_tab)
 
     async def start_login(self):
         url = f'https://login.hexuezx.cn/?code=10427'
@@ -115,7 +117,23 @@ class MainProcess(object):
         await self.start_dp()  # 启动dp框架
 
         # await self.start_login()#进入到登陆页
-        self.help_study()#用这个函数学习
+
+        while 1:
+            if '/#/cours-study' not in self.page.url:
+                logger.error("请在课程学习界面使用")
+                input('-->')
+
+            study_Progress_ele = self.page(f"x://div[@class='study_Progress']")
+            progressbar_ele = study_Progress_ele.child('tag:div')
+            xx_jd = progressbar_ele.attr('aria-valuenow')
+
+            if xx_jd == "100":
+                logger.error(f"课程进度已100% 无需学习")
+                return
+
+            #input('-->')
+
+            self.help_study()#用这个函数学习
 
         #self.help_study_detail(self.page)
         #logger.debug(f"学习结束 跳转到课程列表后操作")
