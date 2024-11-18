@@ -134,6 +134,7 @@ class MainProcess(object):
             #input('-->')
 
             self.help_study()#用这个函数学习
+            time.sleep(5)
 
         #self.help_study_detail(self.page)
         #logger.debug(f"学习结束 跳转到课程列表后操作")
