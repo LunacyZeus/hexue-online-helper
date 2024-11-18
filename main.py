@@ -45,6 +45,7 @@ class MainProcess(object):
         xx_jd = progressbar_ele.attr('aria-valuenow')
         logger.debug(f"开始获取当前课程->{kc_title} 总学习进度:{xx_jd}%")
 
+
         logger.debug('点击继续学习按钮')
         info_list_button = page(f"x://div[@class='info_list_button']")
         #print(info_list_button.html)
@@ -123,6 +124,14 @@ class MainProcess(object):
                 logger.error("请在课程学习界面使用")
                 input('-->')
 
+            introduce_info_ele = self.page(f"x://div[@class='introduce_info']")
+            kc_title = introduce_info_ele.ele(f"x://p[@class='info_title']").text
+
+            if not kc_title:
+                logger.error(f"未获取到课程标题 等待加载")
+                time.sleep(1)
+                continue
+
             study_Progress_ele = self.page(f"x://div[@class='study_Progress']")
             progressbar_ele = study_Progress_ele.child('tag:div')
             xx_jd = progressbar_ele.attr('aria-valuenow')
@@ -134,7 +143,7 @@ class MainProcess(object):
             #input('-->')
 
             self.help_study()#用这个函数学习
-            time.sleep(5)
+            time.sleep(3)
 
         #self.help_study_detail(self.page)
         #logger.debug(f"学习结束 跳转到课程列表后操作")
